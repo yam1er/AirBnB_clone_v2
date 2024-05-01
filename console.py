@@ -2,6 +2,8 @@
 """ Console Module """
 import cmd
 import sys
+import uuid
+from datetime import datetime
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -118,12 +120,13 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class doesn't exist **")
             return
+ 
+        argument_list = args.split(" ")
 
-        elif args not in HBNBCommand.classes:
+        if argument_list[0] not in HBNBCommand.classes:
             print("** class doesn't exist")
             return
 
-        argument_list = args.split(" ")
 
         kwargs = {}
         for i in range(1, len(argument_list)):
@@ -137,8 +140,9 @@ class HBNBCommand(cmd.Cmd):
                     continue
             kwargs[key] = value
         kwargs["id"] = str(uuid.uuid4())
-        kwargs["created_at"] = datetime.now()
-        kwargs["updated_at"] = datetime.now()
+        kwargs["created_at"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+        kwargs["updated_at"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+        kwargs["__class__"] = argument_list[0]
 
         if kwargs == {}:
             obj = eval(argument_list[0])()
