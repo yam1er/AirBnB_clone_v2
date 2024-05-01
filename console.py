@@ -115,38 +115,38 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        try:
-            if not args:
-                raise SyntaxError()
-            argument_list = args.split(" ")
-
-            kwargs = {}
-            for i in range(1, len(argument_list)):
-                key, value = tuple(argument_list[i].split("="))
-                if value[0] == '"':
-                    value = value.strip('"').replace("_", " ")
-                else:
-                    try:
-                        value = eval(value)
-                    except (SyntaxError, NameError):
-                        continue
-                kwargs[key] = value
-            kwargs["id"] = str(uuid.uuid4())
-            kwargs["created_at"] = datetime.now()
-            kwargs["updated_at"] = datetime.now()
-
-            if kwargs == {}:
-                obj = eval(argument_list[0])()
-            else:
-                obj = eval(argument_list[0])(**kwargs)
-                storage.new(obj)
-            print(obj.id)
-            storage.save()
-
-        except SyntaxError:
-            print("** class name missing **")
-        except NameError:
+        if not args:
             print("** class doesn't exist **")
+            return
+
+        elif args not in HBNBCommand.classes:
+            print("** class doesn't exist")
+            return
+
+        argument_list = args.split(" ")
+
+        kwargs = {}
+        for i in range(1, len(argument_list)):
+            key, value = tuple(argument_list[i].split("="))
+            if value[0] == '"':
+                value = value.strip('"').replace("_", " ")
+            else:
+                try:
+                    value = eval(value)
+                except (SyntaxError, NameError):
+                    continue
+            kwargs[key] = value
+        kwargs["id"] = str(uuid.uuid4())
+        kwargs["created_at"] = datetime.now()
+        kwargs["updated_at"] = datetime.now()
+
+        if kwargs == {}:
+            obj = eval(argument_list[0])()
+        else:
+            obj = eval(argument_list[0])(**kwargs)
+            storage.new(obj)
+        print(obj.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
