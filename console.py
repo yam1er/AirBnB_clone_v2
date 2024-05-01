@@ -131,6 +131,9 @@ class HBNBCommand(cmd.Cmd):
                     except (SyntaxError, NameError):
                         continue
                 kwargs[key] = value
+            kwargs["id"] = str(uuid.uuid4())
+            kwargs["created_at"] = datetime.now()
+            kwargs["updated_at"] = datetime.now()
 
             if kwargs == {}:
                 obj = eval(argument_list[0])()
@@ -138,7 +141,7 @@ class HBNBCommand(cmd.Cmd):
                 obj = eval(argument_list[0])(**kwargs)
                 storage.new(obj)
             print(obj.id)
-            obj.save()
+            storage.save()
 
         except SyntaxError:
             print("** class name missing **")
