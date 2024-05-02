@@ -124,7 +124,7 @@ class HBNBCommand(cmd.Cmd):
         argument_list = args.split(" ")
 
         if argument_list[0] not in HBNBCommand.classes:
-            print("** class doesn't exist")
+            print("** class doesn't exist **")
             return
 
 
@@ -139,14 +139,14 @@ class HBNBCommand(cmd.Cmd):
                 except (SyntaxError, NameError):
                     continue
             kwargs[key] = value
-        kwargs["id"] = str(uuid.uuid4())
-        kwargs["created_at"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
-        kwargs["updated_at"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
-        kwargs["__class__"] = argument_list[0]
 
         if kwargs == {}:
             obj = eval(argument_list[0])()
         else:
+            kwargs["id"] = str(uuid.uuid4())
+            kwargs["created_at"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+            kwargs["updated_at"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+            kwargs["__class__"] = argument_list[0]
             obj = eval(argument_list[0])(**kwargs)
             storage.new(obj)
         print(obj.id)
